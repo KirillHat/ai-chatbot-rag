@@ -16,6 +16,13 @@ ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 \
     PATH=/home/app/.local/bin:$PATH \
     PORT=8000
 
+# gosu lets the entrypoint drop from root → app *after* fixing volume
+# ownership. Tiny (~2 MB), trusted (used by 100+ official Docker images),
+# and properly handles signal forwarding so SIGTERM reaches uvicorn.
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends gosu \
+ && rm -rf /var/lib/apt/lists/*
+
 # Non-root user — chromadb writes into ./data which we mount as a volume
 RUN addgroup --system app && adduser --system --ingroup app --home /home/app app
 
@@ -27,11 +34,15 @@ COPY --chown=app:app widget/ ./widget/
 COPY --chown=app:app demo/ ./demo/
 COPY --chown=app:app scripts/ ./scripts/
 COPY --chown=app:app data/knowledge_base/ ./data/knowledge_base/
-RUN mkdir -p /app/data/chroma /app/data/uploads && chown -R app:app /app/data
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh \
+ && mkdir -p /app/data/chroma /app/data/uploads && chown -R app:app /app/data
 
-USER app
+# We do NOT set USER app here — the entrypoint runs as root just long
+# enough to chown the persistent volume mount, then drops to `app`.
 EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
   CMD python -c "import os,urllib.request,sys; p=os.environ.get('PORT','8000'); sys.exit(0 if urllib.request.urlopen(f'http://127.0.0.1:{p}/health',timeout=3).status==200 else 1)" || exit 1
 
+ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]

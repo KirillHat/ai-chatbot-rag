@@ -24,6 +24,7 @@ from app.core.vectorstore import VectorStore  # noqa: E402
 from app.db.database import Database  # noqa: E402
 from app.ingestion.pipeline import IngestionPipeline  # noqa: E402
 
+
 # Look for the bundled demo KB in two places:
 #   1. /app/seed_kb/  — production location inside the Docker image,
 #      kept outside the persistent volume so it survives the mount.

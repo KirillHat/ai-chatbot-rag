@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>AI Chatbot Demo · Pick a vertical</title>
+<style>
+  :root { --bg:#0B1120; --card:#111827; --line:#1F2937; --text:#E5E7EB; --muted:#9CA3AF; --accent:#0F62FE; }
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(135deg,#0B1120,#111827);color:var(--text);
+       font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;min-height:100vh;
+       display:flex;align-items:center;justify-content:center;padding:32px}
+  .wrap{max-width:980px;width:100%}
+  h1{font-size:38px;letter-spacing:-.02em;margin:0 0 8px;font-weight:700}
+  .sub{color:var(--muted);font-size:17px;margin:0 0 32px;max-width:640px;line-height:1.55}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;
+        text-decoration:none;color:inherit;transition:border-color .15s,transform .15s}
+  .card:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .card h2{font-size:20px;margin:0 0 6px;font-weight:600}
+  .card p{margin:0;color:var(--muted);font-size:14px;line-height:1.5}
+  .pill{display:inline-block;background:rgba(15,98,254,.18);color:#94B8FF;padding:3px 10px;
+        border-radius:999px;font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;margin-bottom:10px}
+  .pill.warn{background:rgba(245,158,11,.18);color:#FBBF24}
+  .footer{margin-top:32px;color:var(--muted);font-size:13px}
+  .footer code{background:var(--line);padding:2px 6px;border-radius:4px;color:#E5E7EB}
+  .links{display:flex;gap:14px;margin-top:8px;flex-wrap:wrap}
+  .links a{color:#94B8FF;text-decoration:none;font-size:13px;border-bottom:1px solid transparent}
+  .links a:hover{border-color:#94B8FF}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>AI Chatbot with RAG — live demos</h1>
+  <p class="sub">
+    Two industry demos that share one FastAPI + Claude + ChromaDB backend.
+    Each landing loads the same embeddable widget but is rebranded and pointed
+    at its own knowledge base.
+  </p>
+
+  <div class="grid">
+    <a class="card" href="/demo/hotel/">
+      <span class="pill">Hospitality</span>
+      <h2>Hotel Aurora — Concierge Bot</h2>
+      <p>Boutique hotel landing. The bot answers questions on rooms,
+         breakfast, check-in, parking, the spa and local recommendations.</p>
+    </a>
+
+    <a class="card" href="/demo/law/">
+      <span class="pill">Legal</span>
+      <h2>Bennett &amp; Klein — Legal Assistant</h2>
+      <p>Law-firm landing. The bot answers questions on practice areas,
+         consultation pricing, document checklists, NDAs and intake.</p>
+    </a>
+
+    <a class="card" href="/demo/admin/">
+      <span class="pill warn">Admin</span>
+      <h2>Knowledge-Base Admin</h2>
+      <p>Upload a PDF or Markdown file → chunks are embedded into Chroma →
+         the bot answers from it on the next message. No restart, no rebuild.</p>
+    </a>
+  </div>
+
+  <div class="footer">
+    <p>Backend: <code>POST /api/chat</code> · Widget: <code>/widget/chat-widget.js</code> · API docs: <a href="/docs" style="color:#94B8FF">/docs</a></p>
+    <div class="links">
+      <a href="/health">/health</a>
+      <a href="/api/widget/config">/api/widget/config</a>
+      <!-- GitHub link removed: this is a portfolio piece; replace with the
+           real repo URL when forking. -->
+      <a href="/docs">OpenAPI spec</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

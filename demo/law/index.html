@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Bennett &amp; Klein — Business &amp; IP Law</title>
+<meta name="description" content="Bennett &amp; Klein — a boutique law firm focused on business contracts, intellectual property and international startups." />
+<style>
+  :root{
+    --bg:#FFFFFF; --soft:#F5F6F8; --ink:#0F1729; --muted:#5C6479; --line:#E2E5EC;
+    --accent:#1B3A6B; --accent-d:#13284A; --gold:#B89455;
+    --serif:Georgia,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .btn{background:var(--accent);color:#fff;padding:12px 24px;border-radius:4px;font-size:14px;
+       letter-spacing:.04em;font-weight:600;border:none;cursor:pointer;transition:background .15s;text-decoration:none;display:inline-block}
+  .btn:hover{background:var(--accent-d);color:#fff;text-decoration:none}
+  .btn.outline{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
+  .btn.outline:hover{background:var(--accent);color:#fff}
+
+  /* ---- Top bar ---- */
+  .nav{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);z-index:100}
+  .nav-inner{max-width:1200px;margin:0 auto;padding:18px 28px;display:flex;align-items:center;justify-content:space-between}
+  .brand{font-family:var(--serif);font-size:22px;letter-spacing:.04em;font-weight:700;color:var(--ink)}
+  .brand .amp{color:var(--gold);margin:0 4px}
+  .nav ul{display:flex;gap:32px;list-style:none;margin:0;padding:0}
+  .nav ul a{color:var(--ink);font-size:14px;font-weight:500}
+
+  /* ---- Hero ---- */
+  .hero{background:linear-gradient(180deg,rgba(245,246,248,.92) 0%,rgba(255,255,255,.97) 100%),
+                   url("img/boston_street.jpg") center 30%/cover no-repeat;
+        padding:96px 28px 80px;border-bottom:1px solid var(--line);position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;top:-100px;right:-80px;width:340px;height:340px;
+                border-radius:50%;background:rgba(184,148,85,.12);z-index:1}
+  .hero::after{content:"";position:absolute;bottom:-60px;left:-40px;width:220px;height:220px;
+               border-radius:50%;background:rgba(27,58,107,.08);z-index:1}
+  .hero-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1.2fr 1fr;gap:56px;align-items:center;position:relative}
+  .eyebrow{font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:14px}
+  .hero h1{font-family:var(--serif);font-size:52px;line-height:1.1;margin:0 0 18px;font-weight:700;letter-spacing:-.01em}
+  .hero p.lead{font-size:18px;color:var(--muted);max-width:560px;margin:0 0 32px}
+  .hero-cta{display:flex;gap:14px;flex-wrap:wrap}
+  .hero-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:32px;
+             box-shadow:0 12px 40px rgba(15,23,41,.06)}
+  .hero-card h3{margin:0 0 18px;font-family:var(--serif);font-size:22px;font-weight:600}
+  .hero-card .row{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .hero-card .row:last-child{border:none}
+  .hero-card .row span:first-child{color:var(--muted)}
+  .hero-card .row span:last-child{font-weight:600}
+
+  /* ---- Sections ---- */
+  section{padding:88px 28px}
+  .container{max-width:1200px;margin:0 auto}
+  .section-title{text-align:center;margin-bottom:48px}
+  .section-title .eyebrow{margin-bottom:10px}
+  .section-title h2{font-family:var(--serif);font-size:38px;font-weight:700;margin:0;letter-spacing:-.01em}
+  .section-title p{color:var(--muted);max-width:580px;margin:14px auto 0}
+
+  .practice{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px}
+  .practice-card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:32px 28px;transition:border-color .15s,transform .15s}
+  .practice-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .practice-card .icon{width:46px;height:46px;background:rgba(27,58,107,.1);color:var(--accent);
+                       border-radius:8px;display:flex;align-items:center;justify-content:center;
+                       font-size:22px;margin-bottom:18px}
+  .practice-card h3{font-family:var(--serif);font-size:22px;font-weight:600;margin:0 0 8px}
+  .practice-card p{color:var(--muted);font-size:14.5px;margin:0;line-height:1.6}
+
+  /* Process steps */
+  .process{background:var(--soft);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:32px}
+  .step{text-align:center}
+  .step-num{width:54px;height:54px;border-radius:50%;background:var(--accent);color:#fff;
+            display:inline-flex;align-items:center;justify-content:center;font-family:var(--serif);
+            font-size:22px;font-weight:700;margin-bottom:18px}
+  .step h3{font-family:var(--serif);font-size:20px;margin:0 0 8px;font-weight:600}
+  .step p{color:var(--muted);font-size:14px;margin:0}
+
+  /* Office showcase — full-width photo with title */
+  .office{position:relative;padding:0;overflow:hidden;background:var(--ink)}
+  .office-img{display:block;width:100%;height:auto;max-height:540px;object-fit:cover;object-position:center 60%;
+              filter:saturate(.92) contrast(1.02)}
+  .office-caption{position:absolute;left:0;right:0;bottom:0;padding:32px 28px;
+                  background:linear-gradient(180deg,rgba(15,23,41,0) 0%,rgba(15,23,41,.78) 100%);
+                  color:#fff;text-align:center}
+  .office-caption .eyebrow{color:#E1C892;margin-bottom:8px}
+  .office-caption h2{font-family:var(--serif);font-size:32px;font-weight:600;margin:0 0 6px;letter-spacing:-.005em}
+  .office-caption p{margin:0;color:rgba(255,255,255,.85);font-size:15px;max-width:640px;margin:0 auto}
+
+  /* Gallery */
+  .gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+  .gallery-card{position:relative;border-radius:6px;overflow:hidden;aspect-ratio:3/2;
+                background:var(--ink) center/cover no-repeat;transition:transform .35s ease}
+  .gallery-card:hover{transform:translateY(-3px)}
+  .gallery-card::before{content:"";position:absolute;inset:0;
+                        background:linear-gradient(180deg,rgba(0,0,0,0) 45%,rgba(0,0,0,.6) 100%)}
+  .gallery-card::after{content:attr(data-label);position:absolute;left:18px;bottom:14px;
+                       color:#fff;font-family:var(--serif);font-size:18px;letter-spacing:.01em;
+                       text-shadow:0 2px 14px rgba(0,0,0,.55);z-index:2;font-weight:500}
+  .gallery-card.lobby      {background-image:url("img/lobby.jpg")}
+  .gallery-card.conference {background-image:url("img/conference.jpg")}
+  .gallery-card.attorney   {background-image:url("img/attorney_desk.jpg")}
+  .gallery-card.library    {background-image:url("img/library.jpg")}
+
+  /* Quote — now with library backdrop */
+  .quote{position:relative;color:#E5E7EB;padding:120px 28px;text-align:center;overflow:hidden;
+         background:url("img/library.jpg") center/cover no-repeat,#0F1729}
+  .quote::before{content:"";position:absolute;inset:0;
+                 background:linear-gradient(180deg,rgba(15,23,41,.78) 0%,rgba(15,23,41,.88) 100%)}
+  .quote .container{position:relative;z-index:2}
+  .quote blockquote{max-width:760px;margin:0 auto;font-family:var(--serif);font-size:28px;line-height:1.4;
+                    font-style:italic;font-weight:500}
+  .quote cite{display:block;margin-top:24px;color:var(--gold);font-size:14px;letter-spacing:.08em;
+              font-style:normal;text-transform:uppercase}
+
+  /* CTA strip */
+  .cta-strip{background:#fff;text-align:center;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .cta-strip h2{font-family:var(--serif);font-size:36px;margin:0 0 14px;font-weight:700}
+  .cta-strip p{color:var(--muted);margin:0 0 28px}
+
+  footer{background:var(--ink);color:#9CA3AF;padding:56px 28px;font-size:14px}
+  .foot-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:32px}
+  .foot-grid h4{color:#fff;font-family:var(--serif);font-size:17px;margin:0 0 14px}
+  .foot-grid p{margin:4px 0}
+  .copy{text-align:center;margin-top:36px;padding-top:24px;border-top:1px solid #1A2235;color:#6B7280}
+
+  @media(max-width:860px){
+    .hero-grid{grid-template-columns:1fr}
+    .hero h1{font-size:38px}
+    .nav ul{display:none}
+    section, .hero{padding:56px 20px}
+    /* The office banner has its own internal padding via the caption — keep it edge-to-edge */
+    .office{padding:0}
+    .office-img{max-height:340px}
+    .office-caption{padding:24px 20px}
+    .office-caption h2{font-size:24px}
+    .section-title h2, .cta-strip h2{font-size:30px}
+    .quote blockquote{font-size:22px}
+    .quote{padding:80px 20px}
+    .gallery-card{aspect-ratio:4/3}
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <div class="brand">Bennett <span class="amp">&amp;</span> Klein</div>
+    <ul>
+      <li><a href="#practice">Practice areas</a></li>
+      <li><a href="#process">How we work</a></li>
+      <li><a href="#gallery">The office</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="btn" onclick="window.aiChatOpen && window.aiChatOpen()">Ask the assistant</button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-grid">
+    <div>
+      <div class="eyebrow">Business &amp; IP Law</div>
+      <h1>Practical legal counsel for ambitious startups.</h1>
+      <p class="lead">Founded in 2014 in Boston, Bennett &amp; Klein advises early-
+         and growth-stage companies on contracts, IP and cross-border
+         transactions. Five attorneys. Two paralegals. Zero billable
+         surprises.</p>
+      <div class="hero-cta">
+        <button class="btn" onclick="window.aiChatOpen && window.aiChatOpen()">Get a quick legal answer</button>
+        <a class="btn outline" href="#contact">Book a consultation</a>
+      </div>
+    </div>
+    <div class="hero-card">
+      <h3>At a glance</h3>
+      <div class="row"><span>Initial consultation</span><span>$250 / 45 min</span></div>
+      <div class="row"><span>NDA review (standard)</span><span>$400 fixed</span></div>
+      <div class="row"><span>SaaS terms drafting</span><span>from $1,800</span></div>
+      <div class="row"><span>US trademark filing</span><span>from $950 + USPTO</span></div>
+      <div class="row"><span>Response time</span><span>under 1 business day</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="practice">
+  <div class="container">
+    <div class="section-title">
+      <div class="eyebrow">What we do</div>
+      <h2>Practice areas</h2>
+      <p>We focus on the legal questions that actually move a startup
+         forward — and decline the ones that don't.</p>
+    </div>
+    <div class="practice">
+      <div class="practice-card">
+        <div class="icon">📄</div>
+        <h3>Commercial Contracts</h3>
+        <p>NDAs, MSAs, SaaS terms, vendor agreements, partnership deals. Negotiation included.</p>
+      </div>
+      <div class="practice-card">
+        <div class="icon">💡</div>
+        <h3>Intellectual Property</h3>
+        <p>Trademark search and filing, copyright, trade secrets, IP assignment for founders.</p>
+      </div>
+      <div class="practice-card">
+        <div class="icon">🌍</div>
+        <h3>Cross-Border</h3>
+        <p>Setting up a US Delaware C-Corp from abroad, EU/US data flows, expansion checklists.</p>
+      </div>
+      <div class="practice-card">
+        <div class="icon">⚖</div>
+        <h3>Disputes &amp; Compliance</h3>
+        <p>Demand letters, GDPR/CCPA reviews, employment compliance, SOC 2 readiness counsel.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="process" class="process">
+  <div class="container">
+    <div class="section-title">
+      <div class="eyebrow">How it works</div>
+      <h2>Four steps from question to answer</h2>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><h3>Intake form</h3><p>Two minutes online. We confirm there's no conflict and reply within one business day.</p></div>
+      <div class="step"><div class="step-num">2</div><h3>Consultation</h3><p>45-minute video call. We listen, ask questions, and quote a fixed fee — never an open meter.</p></div>
+      <div class="step"><div class="step-num">3</div><h3>Engagement letter</h3><p>You sign a one-page letter that spells out scope, deliverables and price.</p></div>
+      <div class="step"><div class="step-num">4</div><h3>Delivery</h3><p>Drafts, redlines and final documents arrive on the agreed date. Two rounds of edits included.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="office" class="office">
+  <img class="office-img" src="img/hero_facade.jpg" alt="500 Boylston Street — Bennett &amp; Klein offices" loading="lazy" />
+  <div class="office-caption">
+    <div class="eyebrow">Where we work</div>
+    <h2>500 Boylston Street, Suite 1602</h2>
+    <p>A small office in Boston's Back Bay — five attorneys, two paralegals,
+       one walnut conference table.</p>
+  </div>
+</section>
+
+<section id="gallery">
+  <div class="container">
+    <div class="section-title">
+      <div class="eyebrow">Inside the firm</div>
+      <h2>Quiet rooms, sharp work</h2>
+      <p>The reception you'll walk into, the table where deals get negotiated,
+         the library where the precedents live, and a desk where contracts
+         actually get read line-by-line.</p>
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-card lobby"      data-label="Reception &amp; lobby"></div>
+      <div class="gallery-card conference" data-label="Conference room"></div>
+      <div class="gallery-card library"    data-label="The firm library"></div>
+      <div class="gallery-card attorney"   data-label="Where contracts get read"></div>
+    </div>
+  </div>
+</section>
+
+<section class="quote">
+  <div class="container">
+    <blockquote>
+      "They turned what looked like a 6-week NDA negotiation into a
+      three-day exchange with the other side. We closed the deal that
+      week."
+      <cite>Maya Chen — Founder, Northwind Robotics</cite>
+    </blockquote>
+  </div>
+</section>
+
+<section class="cta-strip">
+  <div class="container">
+    <h2>Have a quick question?</h2>
+    <p>Our AI assistant answers from the firm's public knowledge base —
+       practice areas, fees, intake checklists. For anything case-specific,
+       it'll pass you to a human.</p>
+    <button class="btn" onclick="window.aiChatOpen && window.aiChatOpen()">Open the assistant</button>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="foot-grid">
+    <div>
+      <h4>Bennett &amp; Klein</h4>
+      <p>500 Boylston Street, Suite 1602</p>
+      <p>Boston, MA 02116</p>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <p>+1 (617) 555-0199</p>
+      <p>hello@bennett-klein.example</p>
+    </div>
+    <div>
+      <h4>Hours</h4>
+      <p>Mon–Fri · 09:00 – 18:00 ET</p>
+      <p>By appointment Saturdays</p>
+    </div>
+    <div>
+      <h4>Disclaimers</h4>
+      <p>Attorney advertising. Prior results do not guarantee a similar outcome.</p>
+    </div>
+  </div>
+  <div class="copy">© Bennett &amp; Klein LLP · Demo landing for the AI Chatbot RAG portfolio piece.</div>
+</footer>
+
+<!--
+  Same chat-widget.js as the hotel demo — only the data-* attributes,
+  brand color and greeting change. The KB itself is selected on the
+  server by ASSISTANT_TENANT.
+-->
+<!-- See note in demo/hotel/index.html about data-streaming + proxy buffering. -->
+<script src="/widget/chat-widget.js"
+        data-name="Bennett &amp; Klein Assistant"
+        data-greeting="Hi — I can answer questions about our practice areas, fees, intake process and document checklists. For anything case-specific I'll connect you with an attorney. What would you like to know?"
+        data-primary="#1B3A6B"
+        data-tenant="bennett-klein"
+        data-streaming="true"
+        defer></script>
+<script>
+  window.aiChatOpen = function () {
+    document.querySelector(".aicw-launcher")?.click();
+  };
+</script>
+</body>
+</html>

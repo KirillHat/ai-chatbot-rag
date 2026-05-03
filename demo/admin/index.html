@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Knowledge-Base Admin</title>
+<style>
+  :root{
+    --bg:#F4F5F7; --card:#FFFFFF; --ink:#0F1729; --muted:#6B7280;
+    --line:#E5E7EB; --accent:#0F62FE; --danger:#DA1E28; --success:#198038;
+    --warn:#F1C21B; --code:#161616;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+       font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+       font-size:15px;line-height:1.55;min-height:100vh}
+  header{background:var(--ink);color:#fff;padding:18px 24px;display:flex;align-items:center;justify-content:space-between}
+  header h1{margin:0;font-size:18px;font-weight:600;letter-spacing:-.005em}
+  header h1 small{font-weight:400;opacity:.7;margin-left:10px;font-size:13px}
+  header .pill{background:rgba(255,255,255,.12);padding:5px 11px;border-radius:999px;
+               font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+  main{max-width:1080px;margin:32px auto;padding:0 24px;display:grid;gap:24px}
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:24px}
+  .panel h2{margin:0 0 4px;font-size:18px;font-weight:600}
+  .panel .desc{color:var(--muted);font-size:14px;margin:0 0 18px}
+
+  .auth-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .auth-row label{font-size:12.5px;color:var(--muted);font-weight:500}
+  input[type=password],input[type=text]{padding:10px 12px;border:1px solid var(--line);
+        border-radius:6px;font-size:14px;font-family:inherit;width:340px;max-width:100%;outline:none}
+  input[type=password]:focus,input[type=text]:focus{border-color:var(--accent);
+    box-shadow:0 0 0 3px rgba(15,98,254,.15)}
+  .small{font-size:12.5px;color:var(--muted)}
+  code{background:#EEF1F4;padding:2px 6px;border-radius:4px;font-size:13px;color:#161616}
+
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:18px}
+  .stat{background:#F9FAFB;border:1px solid var(--line);border-radius:8px;padding:14px 16px}
+  .stat .n{font-size:22px;font-weight:700}
+  .stat .l{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+
+  .drop{border:2px dashed var(--line);border-radius:10px;padding:36px 24px;text-align:center;
+        background:#FAFBFC;transition:border-color .15s,background .15s;cursor:pointer}
+  .drop.dragover{border-color:var(--accent);background:rgba(15,98,254,.04)}
+  .drop strong{display:block;font-size:16px;margin-bottom:6px}
+  .drop p{color:var(--muted);margin:0;font-size:13.5px}
+  .drop .browse{color:var(--accent);font-weight:600;text-decoration:underline}
+  input[type=file]{display:none}
+
+  .btn{background:var(--accent);color:#fff;border:none;padding:10px 18px;border-radius:6px;
+       font-size:14px;font-weight:500;cursor:pointer;font-family:inherit}
+  .btn:hover{background:#0049b8}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .btn.danger{background:transparent;color:var(--danger);padding:6px 12px;font-size:13px;border:1px solid #FAD0D2}
+  .btn.danger:hover{background:#FFF1F1}
+  .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+  .btn.ghost:hover{background:#F4F5F7}
+
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line)}
+  th{font-weight:600;color:var(--muted);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+  td.r{text-align:right}
+  .badge{display:inline-block;background:#EEF1F4;color:#393939;padding:2px 8px;border-radius:4px;font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+  .badge.pdf{background:#FEE2DC;color:#A1240B}
+  .badge.markdown{background:#DEF7E5;color:#0E6027}
+  .badge.text{background:#E0F0FF;color:#0043B5}
+
+  .empty{text-align:center;padding:38px 16px;color:var(--muted);font-size:14px}
+  .toast{position:fixed;bottom:24px;right:24px;background:#161616;color:#fff;padding:14px 18px;
+         border-radius:8px;font-size:14px;max-width:380px;box-shadow:0 10px 30px rgba(0,0,0,.2);
+         transform:translateY(80px);opacity:0;transition:all .25s ease;z-index:1000}
+  .toast.show{transform:none;opacity:1}
+  .toast.success{background:var(--success)}
+  .toast.error{background:var(--danger)}
+
+  .progress{height:4px;background:var(--line);border-radius:2px;overflow:hidden;margin-top:12px;display:none}
+  .progress.on{display:block}
+  .progress .bar{height:100%;width:30%;background:var(--accent);border-radius:2px;
+                 animation:progress 1.4s linear infinite}
+  @keyframes progress{0%{margin-left:-30%}100%{margin-left:100%}}
+
+  details{margin-top:14px}
+  details summary{cursor:pointer;font-size:13px;color:var(--accent);font-weight:600}
+  details ul{font-size:13px;color:var(--muted);margin:8px 0 0;padding-left:18px}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Knowledge-Base Admin <small>upload · index · serve</small></h1>
+  <span class="pill">demo</span>
+</header>
+
+<main>
+  <section class="panel" id="auth-panel">
+    <h2>Admin token</h2>
+    <p class="desc">
+      Set <code>ADMIN_API_TOKEN</code> in your <code>.env</code> and paste it here.
+      The token is sent as a <code>Bearer</code> header on every admin call —
+      it never leaves the browser tab.
+    </p>
+    <div class="auth-row">
+      <label for="token">Token</label>
+      <input id="token" type="password" placeholder="paste admin token…" autocomplete="off" />
+      <button class="btn" id="connect-btn">Connect</button>
+      <span id="conn-status" class="small">not connected</span>
+    </div>
+  </section>
+
+  <section class="panel" id="upload-panel" style="display:none">
+    <h2>Upload a document</h2>
+    <p class="desc">
+      Supported: <code>.pdf</code>, <code>.md</code>, <code>.markdown</code>, <code>.txt</code> ·
+      max 25 MB · text is split into ~900-char chunks with 150-char overlap, embedded with the default
+      ONNX MiniLM-L6-v2 model and stored in ChromaDB.
+    </p>
+
+    <div class="stats" id="stats">
+      <div class="stat"><div class="n" id="stat-docs">—</div><div class="l">documents</div></div>
+      <div class="stat"><div class="n" id="stat-chunks">—</div><div class="l">chunks</div></div>
+      <div class="stat"><div class="n" id="stat-chars">—</div><div class="l">total characters</div></div>
+    </div>
+
+    <label for="file" class="drop" id="dropzone">
+      <strong>Drop a file here</strong>
+      <p>or <span class="browse">browse</span> — PDF, Markdown or plain text</p>
+    </label>
+    <input id="file" type="file" accept=".pdf,.md,.markdown,.txt,application/pdf,text/markdown,text/plain" />
+    <div class="progress" id="prog"><div class="bar"></div></div>
+
+    <details>
+      <summary>How it works under the hood</summary>
+      <ul>
+        <li>Bytes are SHA-256'd — re-uploading the same file is a no-op.</li>
+        <li>Loader picks a parser by extension (pypdf for PDF; UTF-8 / Latin-1 fallback for text).</li>
+        <li>Recursive splitter cuts on paragraphs → sentences → words → chars to keep chunks coherent.</li>
+        <li>Each chunk is embedded with the default ONNX MiniLM-L6-v2 model (CPU, no API key).</li>
+        <li>Vectors land in ChromaDB; metadata (name, char count) goes to SQLite.</li>
+        <li>The next <code>/api/chat</code> retrieves the top-K chunks and Claude answers from them with citations.</li>
+      </ul>
+    </details>
+  </section>
+
+  <section class="panel" id="analytics-panel" style="display:none">
+    <h2>Analytics <small style="font-weight:400;color:var(--muted);font-size:13px">· last 30 days</small></h2>
+    <p class="desc">Live aggregates from the chat log. Refreshes when you switch back to this tab.</p>
+    <div class="stats" id="ana-kpis">
+      <div class="stat"><div class="n" id="ana-sessions-7d">—</div><div class="l">sessions (7d)</div></div>
+      <div class="stat"><div class="n" id="ana-msgs-today">—</div><div class="l">questions today</div></div>
+      <div class="stat"><div class="n" id="ana-no-answer">—</div><div class="l">no-answer rate (7d)</div></div>
+      <div class="stat"><div class="n" id="ana-avg-msgs">—</div><div class="l">avg msgs / session</div></div>
+      <div class="stat"><div class="n" id="ana-escalations">—</div><div class="l">escalations (pending)</div></div>
+    </div>
+    <h3 style="font-size:14px;margin:18px 0 8px;color:#393939">Daily question volume (last 30 days)</h3>
+    <div id="ana-chart" style="display:flex;align-items:flex-end;gap:3px;height:120px;padding:10px;background:#F9FAFB;border:1px solid var(--line);border-radius:6px"></div>
+    <h3 style="font-size:14px;margin:18px 0 8px;color:#393939">Top questions (last 7 days)</h3>
+    <ol id="ana-top" style="margin:0;padding-left:22px;font-size:13.5px;color:#393939"></ol>
+  </section>
+
+  <section class="panel" id="docs-panel" style="display:none">
+    <h2>Knowledge base</h2>
+    <p class="desc">Every uploaded document, with its chunk count and ingestion time. Delete removes vectors and metadata atomically.</p>
+    <div id="docs"></div>
+  </section>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const TOKEN_KEY = "aichat-admin-token";
+// API base — read from <body data-api="..."> if the panel is hosted on a
+// different origin than the API. Defaults to same-origin so the bundled
+// /demo/admin/ route keeps working out of the box.
+const API_BASE = (document.body.dataset.api || window.location.origin).replace(/\/$/, "");
+const state = { token: localStorage.getItem(TOKEN_KEY) || "" };
+
+function api(path, opts = {}) {
+  const headers = Object.assign(
+    { "Authorization": "Bearer " + state.token },
+    opts.headers || {}
+  );
+  return fetch(API_BASE + path, Object.assign({}, opts, { headers }));
+}
+
+function clearToken() {
+  state.token = "";
+  localStorage.removeItem(TOKEN_KEY);
+}
+
+function toast(msg, kind) {
+  const t = $("#toast");
+  t.className = "toast show " + (kind || "");
+  t.textContent = msg;
+  clearTimeout(window._tt);
+  window._tt = setTimeout(() => t.classList.remove("show"), 3500);
+}
+
+async function connect() {
+  state.token = $("#token").value.trim();
+  if (!state.token) {
+    toast("Enter the token first", "error");
+    return;
+  }
+  // Probe with a list — works whether the KB is empty or not.
+  let res;
+  try {
+    res = await api("/api/admin/documents");
+  } catch (e) {
+    toast("Cannot reach the API: " + (e.message || e), "error");
+    $("#conn-status").textContent = "network error";
+    return;
+  }
+  if (res.status === 401) {
+    toast("Invalid token", "error");
+    $("#conn-status").textContent = "unauthorized";
+    clearToken();  // never leave a known-bad token sitting in localStorage
+    return;
+  }
+  if (res.status === 503) {
+    toast("Admin API disabled — set ADMIN_API_TOKEN in .env", "error");
+    $("#conn-status").textContent = "admin disabled";
+    return;
+  }
+  if (!res.ok) {
+    toast("Failed to connect (HTTP " + res.status + ")", "error");
+    return;
+  }
+  localStorage.setItem(TOKEN_KEY, state.token);
+  $("#conn-status").textContent = "connected ✓";
+  $("#conn-status").style.color = "#198038";
+  $("#upload-panel").style.display = "block";
+  $("#analytics-panel").style.display = "block";
+  $("#docs-panel").style.display = "block";
+  toast("Connected", "success");
+  await Promise.all([refresh(), loadAnalytics()]);
+}
+
+async function loadAnalytics() {
+  let res;
+  try {
+    res = await api("/api/admin/analytics");
+  } catch (e) {
+    // Don't toast — analytics is non-critical and shouldn't block the UI.
+    console.warn("analytics fetch failed:", e);
+    return;
+  }
+  if (!res.ok) return;
+  const a = await res.json();
+  $("#ana-sessions-7d").textContent = a.sessions_7d.toLocaleString();
+  $("#ana-msgs-today").textContent = a.user_messages_today.toLocaleString();
+  $("#ana-no-answer").textContent = (a.no_answer_rate_7d * 100).toFixed(1) + "%";
+  $("#ana-avg-msgs").textContent = a.avg_messages_per_session.toFixed(1);
+  $("#ana-escalations").textContent =
+    a.escalations_pending + " / " + a.escalations_total;
+
+  // Mini bar chart — pure CSS, no charting lib.
+  const max = Math.max(1, ...a.daily_volume_30d.map((d) => d.messages));
+  const chart = $("#ana-chart");
+  chart.innerHTML = "";
+  for (const d of a.daily_volume_30d) {
+    const bar = document.createElement("div");
+    const h = Math.max(2, Math.round((d.messages / max) * 100));
+    bar.style.cssText =
+      "flex:1;background:" + (d.messages > 0 ? "#0F62FE" : "#E5E7EB") +
+      ";height:" + h + "%;border-radius:2px;min-width:4px";
+    bar.title = d.date + ": " + d.messages + " questions";
+    chart.appendChild(bar);
+  }
+
+  // Top-questions list. Important: never replace the <ol> element itself —
+  // a subsequent loadAnalytics() call would no longer find it (#ana-top
+  // would be detached) and crash. Always rewrite its inner content.
+  const top = $("#ana-top");
+  if (!a.top_questions_7d.length) {
+    top.innerHTML =
+      '<li style="list-style:none;color:#6B7280;font-style:italic">' +
+      'No questions in the last 7 days yet.</li>';
+    return;
+  }
+  top.innerHTML = "";
+  for (const q of a.top_questions_7d) {
+    const li = document.createElement("li");
+    li.textContent = q.question + "  (" + q.count + ")";
+    li.style.marginBottom = "4px";
+    top.appendChild(li);
+  }
+}
+
+async function refresh() {
+  let res;
+  try {
+    res = await api("/api/admin/documents");
+  } catch (e) {
+    toast("Network error: " + (e.message || e), "error");
+    return;
+  }
+  if (res.status === 401) {
+    // Token was revoked / changed since the last successful connect.
+    toast("Token no longer valid — please reconnect", "error");
+    clearToken();
+    $("#conn-status").textContent = "unauthorized";
+    $("#conn-status").style.color = "#DA1E28";
+    $("#upload-panel").style.display = "none";
+    $("#docs-panel").style.display = "none";
+    return;
+  }
+  if (!res.ok) {
+    toast("Failed to load (HTTP " + res.status + ")", "error");
+    return;
+  }
+  const data = await res.json();
+  renderDocs(data);
+  renderStats(data);
+}
+
+function renderStats(data) {
+  $("#stat-docs").textContent = data.documents.length;
+  $("#stat-chunks").textContent = data.total_chunks;
+  const totalChars = data.documents.reduce((s, d) => s + d.char_count, 0);
+  $("#stat-chars").textContent = totalChars.toLocaleString();
+}
+
+// Whitelist of source types we render — anything else is shown as plain text
+// without a CSS class hook. Defends against a backend that one day returns
+// something we didn't expect (and against a compromised backend trying to
+// inject a class attribute that breaks out of quotes).
+const SOURCE_TYPES = new Set(["pdf", "markdown", "text", "url"]);
+
+function renderDocs(data) {
+  const root = $("#docs");
+  if (!data.documents.length) {
+    root.innerHTML = '<div class="empty">No documents yet. Upload your first one above to get started.</div>';
+    return;
+  }
+  const rows = data.documents.map((d) => {
+    const created = new Date(d.created_at).toLocaleString();
+    const safeType = SOURCE_TYPES.has(d.source_type) ? d.source_type : "";
+    const safeId = Number.isFinite(+d.id) ? +d.id : 0;
+    return `
+      <tr>
+        <td>${escapeHtml(d.name)}</td>
+        <td><span class="badge ${safeType}">${escapeHtml(d.source_type || "")}</span></td>
+        <td class="r">${+d.chunk_count || 0}</td>
+        <td class="r">${(+d.char_count || 0).toLocaleString()}</td>
+        <td>${escapeHtml(created)}</td>
+        <td class="r"><button class="btn danger" data-id="${safeId}">Delete</button></td>
+      </tr>`;
+  }).join("");
+  root.innerHTML = `
+    <table>
+      <thead><tr><th>Name</th><th>Type</th><th class="r">Chunks</th><th class="r">Chars</th><th>Uploaded</th><th></th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+  root.querySelectorAll(".btn.danger").forEach((b) =>
+    b.addEventListener("click", () => onDelete(b.dataset.id, b))
+  );
+}
+
+async function onUpload(file) {
+  if (!file) return;
+  $("#prog").classList.add("on");
+  const fd = new FormData();
+  fd.append("file", file);
+  try {
+    let res;
+    try {
+      res = await api("/api/admin/documents", { method: "POST", body: fd });
+    } catch (e) {
+      toast("Network error during upload: " + (e.message || e), "error");
+      return;
+    }
+    if (!res.ok) {
+      const detail = (await res.json().catch(() => ({}))).detail || ("HTTP " + res.status);
+      toast("Upload failed: " + detail, "error");
+      return;
+    }
+    const out = await res.json();
+    toast(`Indexed “${out.name}” → ${out.chunk_count} chunks`, "success");
+    await refresh();
+  } finally {
+    $("#prog").classList.remove("on");
+    $("#file").value = "";
+  }
+}
+
+async function onDelete(id, btn) {
+  if (!confirm("Delete this document and all its vectors? This can't be undone.")) return;
+  btn.disabled = true;
+  let res;
+  try {
+    res = await api("/api/admin/documents/" + id, { method: "DELETE" });
+  } catch (e) {
+    toast("Network error: " + (e.message || e), "error");
+    btn.disabled = false;
+    return;
+  }
+  if (!res.ok && res.status !== 204) {
+    const detail = (await res.json().catch(() => ({}))).detail || ("HTTP " + res.status);
+    toast("Delete failed: " + detail, "error");
+    btn.disabled = false;
+    return;
+  }
+  toast("Deleted");
+  await refresh();
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;",
+  }[c]));
+}
+
+// --- Drag & drop ---
+const drop = $("#dropzone");
+const fileInput = $("#file");
+drop.addEventListener("click", () => fileInput.click());
+fileInput.addEventListener("change", (e) => onUpload(e.target.files[0]));
+["dragenter", "dragover"].forEach((ev) =>
+  drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add("dragover"); })
+);
+["dragleave", "drop"].forEach((ev) =>
+  drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove("dragover"); })
+);
+drop.addEventListener("drop", (e) => onUpload(e.dataTransfer.files[0]));
+
+$("#connect-btn").addEventListener("click", connect);
+$("#token").addEventListener("keydown", (e) => { if (e.key === "Enter") connect(); });
+
+if (state.token) {
+  $("#token").value = state.token;
+  connect();
+}
+</script>
+</body>
+</html>

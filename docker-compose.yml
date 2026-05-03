@@ -1,0 +1,31 @@
+services:
+  api:
+    build: .
+    image: ai-chatbot-rag:latest
+    container_name: ai-chatbot-rag
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      HOST: 0.0.0.0
+      PORT: 8000
+      CHROMA_DIR: /app/data/chroma
+      SQLITE_PATH: /app/data/app.db
+      UPLOAD_DIR: /app/data/uploads
+    ports:
+      - "8000:8000"
+    volumes:
+      - chatbot-data:/app/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import os,urllib.request,sys; p=os.environ.get('PORT','8000'); sys.exit(0 if urllib.request.urlopen(f'http://127.0.0.1:{p}/health',timeout=3).status==200 else 1)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+volumes:
+  chatbot-data:

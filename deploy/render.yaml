@@ -1,0 +1,33 @@
+# Render.com Blueprint — point a new service at this file.
+# https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: ai-chatbot-rag
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: starter           # 512 MB RAM is enough for the default model
+    region: oregon
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false                        # set in dashboard, not in repo
+      - key: ADMIN_API_TOKEN
+        generateValue: true                 # Render mints a strong token
+      - key: HOST
+        value: 0.0.0.0
+      - key: PORT
+        value: 8000
+      - key: CORS_ORIGINS
+        value: "*"
+      - key: CHROMA_DIR
+        value: /var/data/chroma
+      - key: SQLITE_PATH
+        value: /var/data/app.db
+      - key: UPLOAD_DIR
+        value: /var/data/uploads
+    disk:
+      name: chatbot-data
+      mountPath: /var/data
+      sizeGB: 1

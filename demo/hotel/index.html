@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Hotel Aurora — Boutique Stays in the Old Town</title>
+<meta name="description" content="Hotel Aurora — a 24-room boutique hotel in the Old Town. Spa, sea-view rooms, complimentary breakfast." />
+<style>
+  :root{
+    --bg:#FBF8F3; --ink:#1F2024; --muted:#6B6B6B; --line:#E7E1D6;
+    --accent:#A1845C; --accent-d:#8C6F47; --card:#FFFFFF;
+    --serif:"Cormorant Garamond","Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{color:var(--accent-d);text-decoration:underline}
+
+  /* ---- Top bar ---- */
+  .nav{position:sticky;top:0;background:rgba(251,248,243,.94);backdrop-filter:saturate(140%) blur(8px);
+       border-bottom:1px solid var(--line);z-index:100}
+  .nav-inner{max-width:1200px;margin:0 auto;padding:18px 28px;display:flex;align-items:center;justify-content:space-between}
+  .brand{font-family:var(--serif);font-size:24px;letter-spacing:.04em;font-weight:600}
+  .brand span{color:var(--accent);font-style:italic}
+  .nav ul{display:flex;gap:28px;list-style:none;margin:0;padding:0}
+  .nav ul a{color:var(--ink);font-size:14px;letter-spacing:.06em;text-transform:uppercase}
+  .btn{background:var(--accent);color:#fff;padding:11px 22px;border-radius:2px;font-size:13px;
+       letter-spacing:.08em;text-transform:uppercase;border:none;cursor:pointer;transition:background .15s}
+  .btn:hover{background:var(--accent-d);text-decoration:none;color:#fff}
+
+  /* ---- Hero ---- */
+  .hero{position:relative;min-height:620px;height:80vh;display:flex;align-items:center;justify-content:center;
+        text-align:center;color:#fff;overflow:hidden;
+        background:url("img/hero_facade.jpg") center 65%/cover no-repeat,#1a140e}
+  .hero::before{content:"";position:absolute;inset:0;
+    background:linear-gradient(180deg,rgba(15,12,8,.35) 0%,rgba(15,12,8,.55) 60%,rgba(15,12,8,.78) 100%)}
+  .hero-content{position:relative;max-width:760px;padding:0 24px;z-index:2}
+  .eyebrow{font-size:12px;letter-spacing:.4em;text-transform:uppercase;opacity:.85;margin-bottom:18px}
+  .hero h1{font-family:var(--serif);font-size:62px;line-height:1.1;margin:0 0 16px;font-weight:500;letter-spacing:-.01em}
+  .hero p{font-size:18px;max-width:520px;margin:0 auto 28px;opacity:.92}
+  .hero .btn{padding:14px 30px;font-size:14px}
+
+  /* ---- Sections ---- */
+  section{padding:100px 28px}
+  .container{max-width:1200px;margin:0 auto}
+  .section-title{text-align:center;margin-bottom:56px}
+  .section-title .eyebrow{color:var(--accent);font-size:11px;letter-spacing:.3em;margin-bottom:12px}
+  .section-title h2{font-family:var(--serif);font-size:42px;font-weight:500;margin:0;letter-spacing:-.01em}
+  .section-title p{color:var(--muted);max-width:560px;margin:14px auto 0}
+
+  .features{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:32px}
+  .feature{text-align:center;padding:24px}
+  .feature-icon{width:54px;height:54px;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;
+                border:1px solid var(--accent);border-radius:50%;color:var(--accent);font-size:22px}
+  .feature h3{font-family:var(--serif);font-size:22px;font-weight:600;margin:0 0 10px}
+  .feature p{color:var(--muted);font-size:15px;margin:0}
+
+  /* Rooms */
+  .rooms{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .room-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:28px}
+  .room-card{background:var(--bg);border:1px solid var(--line);overflow:hidden;display:flex;flex-direction:column}
+  .room-img{height:220px;position:relative;overflow:hidden;
+            background:#3a3128 center/cover no-repeat;transition:transform .35s ease}
+  .room-card:hover .room-img{transform:scale(1.03)}
+  .room-img.classic{background-image:url("img/room_classic.jpg")}
+  .room-img.deluxe {background-image:url("img/room_deluxe.jpg")}
+  .room-img.suite  {background-image:url("img/room_junior.jpg")}
+  .room-img.terrace{background-image:url("img/room_terrace.jpg")}
+  .room-card-body{padding:22px 22px 26px}
+  .room-card h3{font-family:var(--serif);font-size:24px;font-weight:600;margin:0 0 6px}
+  .room-card .price{color:var(--accent);font-weight:600;font-size:15px;margin-bottom:10px}
+  .room-card p{color:var(--muted);font-size:14px;margin:0 0 14px;line-height:1.55}
+  .room-card ul{font-size:13px;color:var(--muted);margin:0 0 18px;padding-left:18px}
+  .room-card ul li{margin-bottom:4px}
+
+  /* Gallery */
+  .gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+  .gallery-card{position:relative;border-radius:2px;overflow:hidden;aspect-ratio:3/2;
+                background:#3a3128 center/cover no-repeat;transition:transform .35s ease}
+  .gallery-card:hover{transform:translateY(-3px)}
+  .gallery-card::after{content:attr(data-label);position:absolute;left:18px;bottom:14px;
+                       color:#fff;font-family:var(--serif);font-size:20px;letter-spacing:.01em;
+                       text-shadow:0 2px 14px rgba(0,0,0,.55);z-index:2}
+  .gallery-card::before{content:"";position:absolute;inset:0;
+                        background:linear-gradient(180deg,rgba(0,0,0,0) 45%,rgba(0,0,0,.6) 100%)}
+  .gallery-card.spa       {background-image:url("img/spa_pool.jpg")}
+  .gallery-card.spa-room  {background-image:url("img/spa_room.jpg")}
+  .gallery-card.breakfast {background-image:url("img/breakfast.jpg")}
+  .gallery-card.bar       {background-image:url("img/bar_cocktail.jpg")}
+  .gallery-card.lobby     {background-image:url("img/lobby.jpg")}
+  .gallery-card.night     {background-image:url("img/night_view.jpg")}
+  /* The night card gets a slightly darker tint so the label stays readable */
+  .gallery-card.night::before{background:linear-gradient(180deg,rgba(0,0,0,.15) 0%,rgba(0,0,0,.65) 100%)}
+
+  /* Info banner — parallax-style hero with lobby photo behind.
+     Use `fixed` for the parallax effect on desktops, but iOS Safari has a
+     long-standing bug that stretches the background to a 1-px sliver in
+     landscape; we fall back to `scroll` for any iOS device unconditionally. */
+  .info{position:relative;color:#F5EFE3;text-align:center;overflow:hidden;
+        background:url("img/lobby.jpg") center/cover no-repeat fixed,#1a140e}
+  @supports (-webkit-touch-callout: none) {
+    .info{background-attachment:scroll}
+  }
+  .info::before{content:"";position:absolute;inset:0;
+    background:linear-gradient(rgba(15,12,8,.55),rgba(15,12,8,.78))}
+  .info .container{position:relative;z-index:2}
+  .info h2{font-family:var(--serif);font-size:36px;font-weight:500;margin:0 0 14px}
+  .info p{max-width:640px;margin:0 auto 28px;opacity:.92}
+  .info .btn{background:#F5EFE3;color:var(--ink)}
+  .info .btn:hover{background:#fff}
+
+  /* Footer */
+  footer{background:var(--ink);color:#A09786;padding:48px 28px;border-top:1px solid #2a221a;font-size:13px}
+  .foot-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:32px}
+  .foot-grid h4{color:#F5EFE3;font-family:var(--serif);font-size:18px;margin:0 0 12px;font-weight:500}
+  .foot-grid p{margin:4px 0}
+  .copy{text-align:center;margin-top:32px;padding-top:24px;border-top:1px solid #2a221a;color:#776f5f}
+
+  @media(max-width:760px){
+    .hero h1{font-size:42px}
+    .hero{height:auto;min-height:480px;padding:80px 0;background-attachment:scroll}
+    section{padding:64px 20px}
+    .section-title h2{font-size:32px}
+    .nav ul{display:none}
+    /* iOS Safari ignores background-attachment:fixed — fall back to scroll */
+    .info{background-attachment:scroll}
+    .gallery-card{aspect-ratio:4/3}
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <div class="brand">Hotel <span>Aurora</span></div>
+    <ul>
+      <li><a href="#rooms">Rooms</a></li>
+      <li><a href="#amenities">Amenities</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#location">Location</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="btn" onclick="window.aiChatOpen && window.aiChatOpen()">Ask Concierge</button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-content">
+    <div class="eyebrow">Boutique stays · Old Town</div>
+    <h1>A quieter way to stay in the city.</h1>
+    <p>24 rooms, an in-house spa, and a sea-view rooftop. Three minutes
+       from the central square — and one stairwell from a proper coffee.</p>
+    <button class="btn" onclick="window.aiChatOpen && window.aiChatOpen()">Talk to the AI concierge</button>
+  </div>
+</section>
+
+<section id="amenities">
+  <div class="container">
+    <div class="section-title">
+      <div class="eyebrow">What's included</div>
+      <h2>Small touches, every day</h2>
+      <p>Everything we promise on the brochure — and a concierge that actually
+         knows where the best gelato in town hides.</p>
+    </div>
+    <div class="features">
+      <div class="feature"><div class="feature-icon">☕</div><h3>Breakfast</h3><p>Locally-roasted espresso and a hot Mediterranean buffet, 07:00–10:30.</p></div>
+      <div class="feature"><div class="feature-icon">♨</div><h3>Spa &amp; sauna</h3><p>Finnish sauna, steam room and a heated indoor pool. Towels included.</p></div>
+      <div class="feature"><div class="feature-icon">🚗</div><h3>Valet parking</h3><p>Underground parking on request, €18/night. Charging station for EVs.</p></div>
+      <div class="feature"><div class="feature-icon">🐾</div><h3>Pet-friendly</h3><p>Dogs and cats welcome in selected rooms — no surcharge for the first pet.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="rooms" class="rooms">
+  <div class="container">
+    <div class="section-title">
+      <div class="eyebrow">Stay with us</div>
+      <h2>Rooms &amp; suites</h2>
+      <p>Four room categories, from a quiet city-side classic to the rooftop
+         terrace suite with its own outdoor tub.</p>
+    </div>
+    <div class="room-grid">
+      <div class="room-card">
+        <div class="room-img classic"></div>
+        <div class="room-card-body">
+          <h3>Classic Double</h3>
+          <div class="price">from €145 / night</div>
+          <p>22 m², city-side, with a queen bed and a marble bathroom.</p>
+          <ul><li>Queen bed · 22 m²</li><li>Rain shower</li><li>Coffee machine</li></ul>
+        </div>
+      </div>
+      <div class="room-card">
+        <div class="room-img deluxe"></div>
+        <div class="room-card-body">
+          <h3>Deluxe Sea View</h3>
+          <div class="price">from €210 / night</div>
+          <p>28 m², sea-facing balcony, freestanding bath and king bed.</p>
+          <ul><li>King bed · 28 m²</li><li>Balcony &amp; sea view</li><li>Soaking tub</li></ul>
+        </div>
+      </div>
+      <div class="room-card">
+        <div class="room-img suite"></div>
+        <div class="room-card-body">
+          <h3>Junior Suite</h3>
+          <div class="price">from €295 / night</div>
+          <p>40 m², separate sitting area, walk-in shower and Nespresso bar.</p>
+          <ul><li>King bed · 40 m²</li><li>Sitting area</li><li>Walk-in shower</li></ul>
+        </div>
+      </div>
+      <div class="room-card">
+        <div class="room-img terrace"></div>
+        <div class="room-card-body">
+          <h3>Terrace Suite</h3>
+          <div class="price">from €420 / night</div>
+          <p>62 m², private rooftop terrace with an outdoor tub and lounge area.</p>
+          <ul><li>King bed · 62 m²</li><li>Private terrace</li><li>Outdoor tub</li></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="gallery">
+  <div class="container">
+    <div class="section-title">
+      <div class="eyebrow">More than a bed</div>
+      <h2>Spa, breakfast &amp; the quiet bits</h2>
+      <p>Heated pool, Finnish sauna and a small treatment room at the back
+         of the building. A hot Mediterranean breakfast every morning. The
+         Aurora bar from 16:00, and a lobby that looks more like a friend's
+         apartment than a check-in counter.</p>
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-card spa"       data-label="The pool &amp; sauna"></div>
+      <div class="gallery-card spa-room"  data-label="Treatment room"></div>
+      <div class="gallery-card breakfast" data-label="Breakfast 07:00–10:30"></div>
+      <div class="gallery-card bar"       data-label="Aurora Bar 16:00–24:00"></div>
+      <div class="gallery-card lobby"     data-label="Lobby &amp; reception"></div>
+      <div class="gallery-card night"     data-label="Old Town after dark"></div>
+    </div>
+  </div>
+</section>
+
+<section id="location" class="info">
+  <div class="container">
+    <h2>Three minutes from the central square.</h2>
+    <p>15 minutes from the airport by taxi, two from the harbour by foot,
+       five from the cathedral — and exactly nine restaurants are within
+       a 200 m radius.</p>
+    <button class="btn" onclick="window.aiChatOpen && window.aiChatOpen()">Ask the concierge for directions</button>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="foot-grid">
+    <div>
+      <h4>Hotel Aurora</h4>
+      <p>12 Old Mill Street</p>
+      <p>Old Town, 1010</p>
+    </div>
+    <div>
+      <h4>Reservations</h4>
+      <p>+1 (555) 010-2200</p>
+      <p>stay@hotel-aurora.example</p>
+    </div>
+    <div>
+      <h4>Reception</h4>
+      <p>Open 24 / 7</p>
+      <p>Check-in from 15:00, check-out by 11:00</p>
+    </div>
+    <div>
+      <h4>Follow</h4>
+      <p>Instagram · Facebook · Google</p>
+    </div>
+  </div>
+  <div class="copy">© Hotel Aurora · Demo landing for the AI Chatbot RAG portfolio piece.</div>
+</footer>
+
+<!--
+  The widget script is the same file used on every site — only the
+  data-* attributes change per tenant. data-api lets you host the chat
+  backend on a different subdomain than the marketing site.
+-->
+<!--
+  data-streaming="true" works behind nginx with `proxy_buffering off` and on
+  Fly/Railway/Render directly. If you embed on a site whose CDN/proxy
+  buffers responses, set this to "false" and the widget falls back to the
+  blocking /api/chat endpoint (slightly slower, but no SSE issues).
+-->
+<script src="/widget/chat-widget.js"
+        data-name="Aurora Concierge"
+        data-greeting="Welcome to Hotel Aurora! I can help with rooms, breakfast, the spa, parking and the neighbourhood. What would you like to know?"
+        data-primary="#A1845C"
+        data-tenant="hotel-aurora"
+        data-streaming="true"
+        defer></script>
+<script>
+  // Convenience handle so demo CTAs can open the panel programmatically.
+  window.aiChatOpen = function () {
+    document.querySelector(".aicw-launcher")?.click();
+  };
+</script>
+</body>
+</html>

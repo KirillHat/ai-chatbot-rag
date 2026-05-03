@@ -1,6 +1,6 @@
 # AI Chatbot with RAG — Embeddable Assistant for Company Websites
 
-[![CI](https://img.shields.io/badge/CI-passing-brightgreen)](.github/workflows/ci.yml)
+[![CI](https://github.com/KirillHat/ai-chatbot-rag/actions/workflows/ci.yml/badge.svg)](https://github.com/KirillHat/ai-chatbot-rag/actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/tests-72%20passing-brightgreen)](tests/)
 [![Streaming](https://img.shields.io/badge/streaming-SSE-purple)](app/api/chat.py)
 [![Hybrid](https://img.shields.io/badge/retrieval-BM25%20+%20vector-blue)](app/core/retrieval.py)

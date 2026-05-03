@@ -3,16 +3,7 @@ name: CI
 on:
   push:
     branches: [main]
-    paths:
-      - "upwork_portfolio/2_ai_chatbot_rag/**"
-      - ".github/workflows/ci.yml"
   pull_request:
-    paths:
-      - "upwork_portfolio/2_ai_chatbot_rag/**"
-
-defaults:
-  run:
-    working-directory: upwork_portfolio/2_ai_chatbot_rag
 
 jobs:
   test:
@@ -29,7 +20,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
-          cache-dependency-path: upwork_portfolio/2_ai_chatbot_rag/requirements-dev.txt
+          cache-dependency-path: requirements-dev.txt
       - name: Install
         run: |
           python -m pip install --upgrade pip
@@ -45,7 +36,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage
-          path: upwork_portfolio/2_ai_chatbot_rag/coverage.xml
+          path: coverage.xml
 
   docker:
     name: Docker build
@@ -56,7 +47,7 @@ jobs:
       - name: Build image
         uses: docker/build-push-action@v6
         with:
-          context: upwork_portfolio/2_ai_chatbot_rag
+          context: .
           push: false
           load: true
           tags: ai-chatbot-rag:ci

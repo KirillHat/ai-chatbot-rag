@@ -33,7 +33,12 @@ COPY --chown=app:app app/ ./app/
 COPY --chown=app:app widget/ ./widget/
 COPY --chown=app:app demo/ ./demo/
 COPY --chown=app:app scripts/ ./scripts/
-COPY --chown=app:app data/knowledge_base/ ./data/knowledge_base/
+# Bundled demo KB — copied to /app/seed_kb (NOT /app/data/knowledge_base).
+# `/app/data/` is the persistent-volume mount point on Railway/Fly/Render,
+# and the volume mount hides anything baked into that path at build time.
+# Keeping the seed KB outside the volume lets `seed_knowledge_base.py`
+# always find it regardless of platform.
+COPY --chown=app:app data/knowledge_base/ /app/seed_kb/
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh \
  && mkdir -p /app/data/chroma /app/data/uploads && chown -R app:app /app/data

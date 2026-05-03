@@ -24,7 +24,21 @@ from app.core.vectorstore import VectorStore  # noqa: E402
 from app.db.database import Database  # noqa: E402
 from app.ingestion.pipeline import IngestionPipeline  # noqa: E402
 
-KB_ROOT = ROOT / "data" / "knowledge_base"
+# Look for the bundled demo KB in two places:
+#   1. /app/seed_kb/  — production location inside the Docker image,
+#      kept outside the persistent volume so it survives the mount.
+#   2. <repo>/data/knowledge_base/ — the local-dev location.
+# The first one that exists wins.
+def _find_kb_root() -> Path:
+    candidates = [Path("/app/seed_kb"), ROOT / "data" / "knowledge_base"]
+    for c in candidates:
+        if c.is_dir():
+            return c
+    # Fall back to the legacy path so the error message is clear.
+    return ROOT / "data" / "knowledge_base"
+
+
+KB_ROOT = _find_kb_root()
 
 
 async def seed(folder: Path, pipeline: IngestionPipeline) -> tuple[int, int, int]:

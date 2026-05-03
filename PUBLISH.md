@@ -57,98 +57,71 @@ a couple of minutes — that's the "this guy actually ships" signal.
 
 ---
 
-## 2️⃣ Deploy publicly (≈30 min, recommended: Fly.io)
+## 2️⃣ Deploy publicly on Railway (≈10 min)
 
-> **Why:** Upwork clients won't book a discovery call without touching
-> the demo first. Without a public URL the entire portfolio piece is
-> theoretical.
-
-### Pick one of three platforms
-
-| Platform | Cost | Cold start | Best for |
-|---|---|---|---|
-| **Fly.io** | Free tier (3 shared VMs) or ~$2-3/mo always-on | 5-10s after idle | Independent freelancer demo, full control |
-| **Railway** | $5/mo always-warm | None | Want zero-fuss "always works" |
-| **Render** | Free tier (idle after 15min) or $7/mo | 30-60s on free | One-click via blueprint, generous free tier |
-
-### My recommendation: Fly.io with `min_machines_running = 1`
-
-Adds ~$2-3/mo but eliminates the "oops the demo took 10 seconds to
-respond, looks broken" first impression. Decisive for portfolio use.
+> **Why Railway specifically:** zero cold-start, $5/mo always-warm, the
+> simplest deploy command of any platform. No volume-creation drama,
+> no region picking, no min-machines tuning. The entire deploy is 6
+> commands. For a portfolio demo seen by Upwork clients, "instant"
+> matters more than "free with caveats" — a 5-10 second cold start
+> reads as "broken" to a stranger evaluating you.
 
 ```bash
-# 1. Install + auth
-brew install flyctl    # one-time
-fly auth login         # opens browser
+cd upwork_portfolio/2_ai_chatbot_rag
 
-# 2. Create the app and the persistent volume
-fly launch --copy-config deploy/fly.toml --no-deploy
-# It'll ask:
-#   App name: ai-chatbot-rag-<your-suffix>   (must be globally unique)
-#   Region:   pick one near your target clients (iad / ams / fra / sin)
-#   Postgres: NO
-#   Redis:    NO
-#   Deploy now: NO
+# 1. Install + auth (one-time)
+brew install railway    # or: npm i -g @railway/cli
+railway login           # opens browser
 
-fly volumes create chatbot_data --region <same-region> --size 1
-# 1 GB is plenty — Chroma + SQLite for ~5k chunks fits in <100 MB
+# 2. Create project + service in one go (workspace ID required for non-interactive)
+WORKSPACE_ID=$(railway list --json | python3 -c "import json,sys; print(json.load(sys.stdin)[0]['workspace']['id'])")
+railway init --name ai-chatbot-rag --workspace "$WORKSPACE_ID"
+railway add --service ai-chatbot-rag \
+  --variables "ADMIN_API_TOKEN=$(openssl rand -hex 24)" \
+  --variables "HOST=0.0.0.0" \
+  --variables "CORS_ORIGINS=*" \
+  --variables "CHROMA_DIR=/app/data/chroma" \
+  --variables "SQLITE_PATH=/app/data/app.db" \
+  --variables "UPLOAD_DIR=/app/data/uploads" \
+  --variables "ASSISTANT_NAME=AI Assistant" \
+  --variables "ASSISTANT_TENANT=demo"
+railway service ai-chatbot-rag                # link the new service to cwd
 
-# 3. Set the secrets (these never end up in git, only on Fly's server)
-fly secrets set \
-  ANTHROPIC_API_KEY=sk-ant-API03-... \
-  ADMIN_API_TOKEN=$(openssl rand -hex 24) \
-  ASSISTANT_NAME="AI Assistant" \
-  ASSISTANT_TENANT="demo"
+# 3. Persistent volume (Chroma + SQLite + uploads survive redeploys)
+railway volume add --mount-path /app/data
 
-# 4. Bake in always-warm before deploying
-sed -i '' 's/min_machines_running = 0/min_machines_running = 1/' deploy/fly.toml
-git add deploy/fly.toml && git commit -m "Pin always-warm machine for portfolio"
+# 4. Generate a public URL + first deploy
+railway domain                                # prints https://...up.railway.app
+railway up --detach                           # builds & ships the Dockerfile
 
-# 5. Deploy
-fly deploy
-fly status                              # should show 1 running machine
-fly open                                # opens https://your-app.fly.dev
+# 5. Wire your Anthropic API key (mark as secret so it doesn't show in logs)
+railway variables --set "ANTHROPIC_API_KEY=sk-ant-..."
+
+# 6. Seed the demo KB + realistic analytics on the deployed instance
+railway run python scripts/seed_knowledge_base.py
+railway run python scripts/seed_demo_chats.py
 ```
 
 ### After deploy — 60-second smoke test
 
 ```bash
-URL=https://your-app.fly.dev    # use whatever fly assigned
-
-# /health: status: "ok" if API key works, "degraded" otherwise
-curl -s "$URL/health" | jq
-
-# Demo landings
-open "$URL/demo/hotel/"          # try chatting!
+URL=$(railway domain | grep -oE 'https://[^ ]+')
+curl -s "$URL/health" | jq               # status: ok if API key set, degraded if not
+open "$URL/demo/hotel/"                   # try the chat
 open "$URL/demo/law/"
-open "$URL/demo/admin/"          # paste your ADMIN_API_TOKEN
+open "$URL/demo/admin/"                   # paste the ADMIN_API_TOKEN you generated
 ```
 
-### Then re-seed the demo KB on the deployed instance
+### Why not Fly.io / Render?
 
-The demo KB is bundled in the image at `data/knowledge_base/` but isn't
-auto-loaded into Chroma — first ingestion happens lazily. Easiest way:
+- **Fly.io** — free tier is real, but `auto_stop_machines = "stop"` means a 5-10s cold-start. To remove it you set `min_machines_running = 1` (≈$2/mo) — at which point you've matched Railway's price but written 4× more config. Persistent volumes are also a separate `fly volumes create` step that has to match the region. Use it if you have a strong preference for full control over the runtime.
+- **Render** — free tier idles after 15 min and the cold-start is 30-60 seconds. Acceptable for a hobby project but **not** for an Upwork demo where the client's first impression is the URL load time.
+- **Cloud Run / GKE / EKS** — overkill for a single-replica demo. Worth it once you start landing $5k+ engagements with infra requirements.
 
-```bash
-fly ssh console
-cd /app
-python scripts/seed_knowledge_base.py
-python scripts/seed_demo_chats.py    # makes the analytics tab look populated
-exit
-```
-
-### Update the URL in your docs + push
+### Update the GitHub homepage
 
 ```bash
-# Use sed to swap the placeholder in every file at once.
-PUBLIC=https://your-app.fly.dev
-grep -rl "_(deploy URL goes here)_\|_(deploy URL)_" \
-  README.md upwork_description.md VIDEO_SCRIPT.md demo/ widget/README.md \
-  | xargs sed -i '' "s|_(deploy URL goes here)_|$PUBLIC|g; s|_(deploy URL)_|$PUBLIC|g"
-
-# Commit the URL changes
-git add -A && git commit -m "Wire deployed URL into docs"
-git push
+gh repo edit KirillHat/ai-chatbot-rag --homepage "$URL"
 ```
 
 ---
@@ -166,7 +139,7 @@ In your Upwork freelancer profile → **Portfolio** → **Add work**:
 Use the body text under **"Description (≈220 words)"** in
 `upwork_description.md`. Replace the two placeholders:
 
-- `_(deploy URL goes here)_` → your Fly URL
+- The Railway URL → already wired in
 - `link in profile` → your GitHub repo URL
 
 ### Skills / tags
@@ -186,8 +159,8 @@ Upwork lets you pick up to 15.
 
 ### Project URL
 
-Your Fly deploy URL — `https://your-app.fly.dev/` (Upwork shows this as
-"View project" button, very high click-through).
+Your Railway deploy URL — `https://ai-chatbot-rag-production-9637.up.railway.app`
+(Upwork shows this as "View project" button, very high click-through).
 
 ### Source code URL
 

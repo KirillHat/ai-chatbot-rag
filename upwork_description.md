@@ -38,7 +38,7 @@ What's in the box:
 
 Stack: **Python 3.11 · FastAPI · Anthropic Claude 3.5 Sonnet · ChromaDB · BM25 (custom, 50 LOC, no deps) · sentence-transformers (optional) · Cohere rerank (optional) · pypdf · pydantic-settings · aiosqlite · Docker · GitHub Actions**.
 
-**Live demo:** _(deploy URL goes here)_
+**Live demo:** https://ai-chatbot-rag-production-9637.up.railway.app
 **Code:** GitHub repo (link in profile)
 
 ---
@@ -105,10 +105,10 @@ When a client opens chat, send something like this in the first 60 seconds:
 >
 > Quick links so you can evaluate the work before deciding:
 >
-> 🔹 Live demo (hotel concierge): _(deploy URL)_/demo/hotel/
-> 🔹 Live demo (law firm assistant): _(deploy URL)_/demo/law/
-> 🔹 Admin panel (drop a PDF, watch the bot learn): _(deploy URL)_/demo/admin/
-> 🔹 OpenAPI docs: _(deploy URL)_/docs
+> 🔹 Live demo (hotel concierge): https://ai-chatbot-rag-production-9637.up.railway.app/demo/hotel/
+> 🔹 Live demo (law firm assistant): https://ai-chatbot-rag-production-9637.up.railway.app/demo/law/
+> 🔹 Admin panel (drop a PDF, watch the bot learn): https://ai-chatbot-rag-production-9637.up.railway.app/demo/admin/
+> 🔹 OpenAPI docs: https://ai-chatbot-rag-production-9637.up.railway.app/docs
 > 🔹 Source code: github.com/{{your-username}}/ai-chatbot-rag
 >
 > The admin token for the public demo is `demo-please-do-not-abuse-1234567890` —

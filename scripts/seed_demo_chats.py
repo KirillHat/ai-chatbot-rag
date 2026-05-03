@@ -141,7 +141,7 @@ async def seed():
         now = datetime.now(timezone.utc)
         session_count = 12
         msg_count = 0
-        for s in range(session_count):
+        for _s in range(session_count):
             sid = uuid.uuid4().hex
             session_age_days = rng.uniform(0.05, 6.9)
             session_started = now - timedelta(days=session_age_days)
@@ -182,11 +182,11 @@ async def seed():
                 msg_count += 2
 
         # 3 escalations — 2 notified (slack), 1 still pending.
-        for i, (sid_age, contact, reason, status) in enumerate([
+        for sid_age, contact, reason, status in [
             (0.5, "anna@example.com", "Need a quote for a 2-week stay (12 guests)", "notified"),
             (2.1, "+1 555 0142",     "Question about deposit refund timing",        "notified"),
             (0.2, None,              "Discuss accessible room options",              "pending"),
-        ]):
+        ]:
             sid = uuid.uuid4().hex
             t = now - timedelta(days=sid_age)
             await db.execute(

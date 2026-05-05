@@ -30,7 +30,7 @@ class StubClaude(ClaudeClient):
 
     def __init__(self):
         super().__init__(
-            api_key="test-key",  # any non-empty value flips `configured` on
+            api_key="test-key",  # pragma: allowlist secret  any non-empty value flips `configured` on
             model="stub",
             max_tokens=256,
             assistant_name="Test Bot",

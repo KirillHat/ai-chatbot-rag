@@ -393,7 +393,7 @@ not the first request.
 | Variable                  | Default                          | What it does |
 |---------------------------|----------------------------------|--------------|
 | `ANTHROPIC_API_KEY`       | (empty → `/api/chat` returns 503) | Anthropic API key. |
-| `CLAUDE_MODEL`            | `claude-3-5-sonnet-20241022`     | Any chat-capable Claude model. |
+| `CLAUDE_MODEL`            | `claude-sonnet-4-6`              | Any chat-capable Claude model id. Sonnet 4.6 is the cost/quality sweet spot for RAG; swap to `claude-haiku-4-5-20251001` for ~5× cheaper / 2× faster, or `claude-opus-4-7` for top-tier reasoning. |
 | `CLAUDE_MAX_TOKENS`       | `1024`                           | Max tokens in the assistant reply. |
 | `ADMIN_API_TOKEN`         | `change-me` (admin disabled!)    | Bearer token for `/api/admin/*`. **Set this.** |
 | `CHROMA_DIR`              | `./data/chroma`                  | Persistent vector store path. |

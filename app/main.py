@@ -10,10 +10,12 @@ from __future__ import annotations
 import logging
 from contextlib import asynccontextmanager
 from pathlib import Path
+from time import perf_counter
+from uuid import uuid4
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, RedirectResponse
+from fastapi.responses import FileResponse, PlainTextResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from app import __version__
@@ -26,14 +28,16 @@ from app.core.retrieval import HybridRetriever
 from app.core.vectorstore import VectorStore
 from app.db.database import Database
 from app.ingestion.pipeline import IngestionPipeline
+from app.observability import REQUEST_ID_CTX, MetricsStore, install_request_id_filter
 from app.services.chat_service import ChatService
 from app.services.escalation_service import EscalationService
 
 log = logging.getLogger(__name__)
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s %(levelname)-7s %(name)s: %(message)s",
+    format="%(asctime)s %(levelname)-7s [req=%(request_id)s] %(name)s: %(message)s",
 )
+install_request_id_filter()
 
 
 @asynccontextmanager
@@ -137,6 +141,7 @@ def create_app(settings_override: Settings | None = None) -> FastAPI:
         lifespan=lifespan,
     )
     app.state.settings = settings
+    app.state.metrics = MetricsStore()
 
     app.add_middleware(
         CORSMiddleware,
@@ -151,6 +156,30 @@ def create_app(settings_override: Settings | None = None) -> FastAPI:
     app.include_router(escalate.router)
     app.include_router(widget.router)
     app.include_router(admin.router)
+
+    @app.middleware("http")
+    async def observability_middleware(request: Request, call_next):
+        request_id = request.headers.get("X-Request-ID", str(uuid4()))
+        token = REQUEST_ID_CTX.set(request_id)
+        start = perf_counter()
+        try:
+            response = await call_next(request)
+            status_code = response.status_code
+        except Exception:
+            status_code = 500
+            raise
+        finally:
+            route = request.scope.get("route")
+            route_path = getattr(route, "path", request.url.path)
+            app.state.metrics.observe(
+                method=request.method,
+                path=route_path,
+                status=status_code,
+                duration_seconds=perf_counter() - start,
+            )
+            REQUEST_ID_CTX.reset(token)
+        response.headers["X-Request-ID"] = request_id
+        return response
 
     # Mount the JS widget at /widget/* so any site can `<script>` to it.
     widget_dir = Path(__file__).parent.parent / "widget"
@@ -168,6 +197,13 @@ def create_app(settings_override: Settings | None = None) -> FastAPI:
         if index.exists():
             return FileResponse(index)
         return RedirectResponse(url="/docs")
+
+    @app.get("/metrics", include_in_schema=False)
+    async def metrics():
+        return PlainTextResponse(
+            app.state.metrics.render_prometheus(),
+            media_type="text/plain; version=0.0.4",
+        )
 
     return app
 

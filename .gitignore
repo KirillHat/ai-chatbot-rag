@@ -24,3 +24,9 @@ data/uploads/*
 data/app.db
 data/app.db-*
 *.log
+
+# SQLite catch-all — defends against forks that put a DB at a different path.
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3

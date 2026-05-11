@@ -2,6 +2,17 @@
 
 All notable changes to this project are recorded here.
 
+## [1.1.1] — 2026-05-11
+
+### Added
+- Two more security regression tests, bringing the suite to **74 tests, ~27 s**.
+
+### Changed
+- README and portfolio descriptions now consistently quote **74 tests** and
+  **Anthropic Claude Sonnet 4.6** (the version the bundled config actually
+  loads). Earlier copies of `upwork_description.md` quoted 72/50 tests and
+  Claude 3.5 Sonnet — those were stale.
+
 ## [1.1.0] — 2026-05-02
 
 ### Added

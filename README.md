@@ -342,7 +342,7 @@ GET    /api/admin/analytics       → { sessions_*, no_answer_rate_7d,
 
 ## 🧪 Tests
 
-72 tests covering chunking, loaders, the database layer, the ingestion pipeline,
+74 tests covering chunking, loaders, the database layer, the ingestion pipeline,
 RAG citation extraction, hybrid retrieval (BM25 + RRF), re-ranker factory,
 escalation flow, analytics shape, streaming SSE end-to-end, the public + admin
 API surface, auth, rate-limiting, plus 7 security regressions

@@ -189,11 +189,11 @@ has the full template; here's the short version):
 
 > Hi {{name}}, before I write a long proposal — let me show you the work.
 >
-> 🔹 Live demo: https://your-app.fly.dev/demo/hotel/
-> 🔹 Same backend, different vertical: https://your-app.fly.dev/demo/law/
-> 🔹 Admin panel (drop a PDF, watch it learn): https://your-app.fly.dev/demo/admin/
+> 🔹 Live demo: https://ai-chatbot-rag-production-9637.up.railway.app/demo/hotel/
+> 🔹 Same backend, different vertical: https://ai-chatbot-rag-production-9637.up.railway.app/demo/law/
+> 🔹 Admin panel (drop a PDF, watch it learn): https://ai-chatbot-rag-production-9637.up.railway.app/demo/admin/
 >    Token for the public demo: `demo-please-do-not-abuse-1234567890`
-> 🔹 Source: github.com/{{your-handle}}/ai-chatbot-rag
+> 🔹 Source: github.com/KirillHat/ai-chatbot-rag
 >
 > What's the URL of the website where you'd embed this? I can spin up a
 > branch with your branding and a sample of your KB and show you the

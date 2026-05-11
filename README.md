@@ -328,7 +328,7 @@ GET    /api/admin/analytics       → { sessions_*, no_answer_rate_7d,
 │   └── app.db                  # SQLite metadata (gitignored)
 ├── scripts/
 │   └── seed_knowledge_base.py  # Bootstrap the demo KBs (idempotent)
-├── tests/                      # 72 pytest tests across 10 files, ~30s total
+├── tests/                      # 74 pytest tests across 10 files, ~30s total
 ├── deploy/                     # Railway / Fly.io / Render deploy templates
 ├── Procfile                    # Heroku-style platforms (workers pinned to 1)
 ├── CHANGELOG.md
